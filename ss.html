@@ -1,0 +1,105 @@
+<!DOCTYPE Html>
+
+
+<html>
+    <head>
+        <title>Expense Tracker App</title>
+        <title> Expense Tracker </title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+    </head>
+    <body>
+            <h2>Expense Tracker App</h2>
+            <form id="expenseTracker-form">
+              <div class="container">
+                <label for="expenseAmount" class="form-label">Choose Expense Amount:</label>
+                <input type="text" class="form-control"id="expenseAmount">
+                <label for="description" class="form-label">Choose Description:</label>
+                <input type="text" class="form-control" id="description">
+    
+              
+                <label for="category" class="form-label">Choose Category:</label>
+                <select name="category" id="category" class="form-select">
+                    <option value="Food">Food</option>
+                    <option value="Electricity">Electricity</option>
+                    <option value="Movies">Movies</option>
+                    <option value="Fuel">Fuel</option>
+                    <option value="Books">Books</option>
+                    <option value="Shopping">Shopping</option>
+                </select>
+                <input class="btn btn-primary" type="submit" value="Add Expense">
+            </form>
+        </div>
+
+            <ul id="expenses"></ul>
+    
+<script>
+const expenseAmt = document.getElementById('expenseAmount');
+const description = document.getElementById('description');
+const category = document.getElementById('category');
+const myForm = document.getElementById('expenseTracker-form');
+
+myForm.addEventListener('submit',addExpense);
+
+function addExpense(e) {
+    if(expenseAmt.value == '' || description.value == '' || category.value == ''){
+        alert('Please fill all details');
+    } else {
+        e.preventDefault();
+
+        const expenseDetails = {
+            expenseAmount : expenseAmt.value,
+            desc : description.value,
+            Category : category.value
+        }
+
+        let expenseSerialised = JSON.stringify(expenseDetails);
+
+        localStorage.setItem(expenseDetails.Category,expenseSerialised);
+        showexpenseonScreen(expenseDetails);
+
+        expenseAmt.value = '';
+        description.value = '';
+        category.value = '';
+    }
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+Object.keys(localStorage).forEach((key) => {
+    const stringifiedDetails = localStorage.getItem(key);
+    const details = JSON.parse(stringifiedDetails);
+    showUsersOnScreen(details);
+})
+})
+function showexpenseonScreen(expense){
+    const parentNode = document.getElementById('expenses');
+    const childHTML = `<li id=${expense.Category}>  ${expense.expenseAmount} : ${expense.desc} : ${expense.Category}
+    <button onClick=deleteExpense("${expense.Category}")>Delete Expense</button>
+    <button onclick=editExpense("${expense.Category}","${expense.expenseAmount}","${expense.desc}")>Edit Expense</button>
+    </li>`
+    parentNode.innerHTML = parentNode.innerHTML + childHTML;
+}
+
+function editExpense(category,expenseAmt,desc){
+    document.getElementById('category').value = category;
+    document.getElementById('expenseAmount').value = expenseAmt;
+    document.getElementById('description').value = desc;
+    deleteExpense(category);
+}
+
+function deleteExpense(category){
+    localStorage.removeItem(category);
+    removeexpensefromScreen(category);
+}
+
+function removeexpensefromScreen(category){
+    const parentNode = document.getElementById('expenses');
+    const deleteChild = document.getElementById(category);
+    if(deleteChild){
+        parentNode.removeChild(deleteChild);
+    }
+}
+
+</script>
+</body>
+</html>
