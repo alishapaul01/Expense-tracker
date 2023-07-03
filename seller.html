@@ -29,7 +29,9 @@
             </form>
         </div>
         <br>
+        <div>
         <ul id="products" class="fw-bold">PRODUCTS:<br></ul>
+        </div>
         
         <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js" integrity="sha512-uMtXmF28A2Ab/JJO2t/vYhlaa/3ahUOgj1Zf27M5rOo8/+fcTUVH0/E0ll68njmjrLqOBjXM3V9NiPFL5ywWPQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>   
 
@@ -57,7 +59,7 @@
 
                 }
 
-                axios.post('https://crudcrud.com/api/699085802e074e85b46dba49f4a362bb/products', productDetails)
+                axios.post('https://crudcrud.com/api/a3fa8d5b49924369ab38384f601fb9ae/products', productDetails)
                 .then((response)=>{
                     ShowProductonScreen(response.data)
                 })
@@ -73,7 +75,7 @@
         }
 
             window.addEventListener("DOMContentLoaded", ()=>{
-                axios.get('https://crudcrud.com/api/699085802e074e85b46dba49f4a362bb/products')
+                axios.get('https://crudcrud.com/api/a3fa8d5b49924369ab38384f601fb9ae/products')
                 .then((response)=>{
                     console.log(response);
                     for(var i=0; i<response.data.length; i++){
@@ -86,9 +88,8 @@
             })
 
             function ShowProductonScreen(product){
-
                 const parentNode = document.getElementById('products');
-                const childHTML = `<li id=${product._id} class="fw-normal">  ${product.sellingprice} - ${product.productname} - ${product.category}<br>
+                const childHTML = `<li id=${product._id} class="fw-normal">  ${product.sellingprice} - ${product.productname} - ${product.category}
                     <button  class="btn btn-danger btn-sm" onClick=deleteProduct("${product._id}")>Delete Product</button>
                     </li>`
                     parentNode.innerHTML = parentNode.innerHTML + childHTML;
@@ -97,7 +98,7 @@
 
             
             function deleteProduct(productId){
-                axios.delete(`https://crudcrud.com/api/699085802e074e85b46dba49f4a362bb/products/${productId}`)
+                axios.delete(`https://crudcrud.com/api/a3fa8d5b49924369ab38384f601fb9ae/products/${productId}`)
                 .then((response)=>{
                     removeProductfromScreen(productId)
                 })
