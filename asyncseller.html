@@ -20,6 +20,7 @@
             <input type="text" class="form-control" id="product">
             <label for="category" class="form-label">Category:</label>
             <select class="form-select" id="category">
+                <option value="Select a category" disabled selected>Select a Category</option>
                 <option value="Food">Food</option>
                 <option value="Skincare">Skincare</option>
                 <option value="Electronics">Electronics</option>
@@ -29,8 +30,14 @@
         </form>
     </div>
     <br>
-        <h2>PRODUCTS:</h2>       
-        <ul id="products"></ul>
+        <h2>PRODUCTS:</h2> 
+        <h4>FOOD:</h4>       
+        <ul id="Food"></ul>  
+        <h4>SKINCARE:</h4>       
+        <ul id="Skincare"></ul> 
+        <h4>ELECTRONICS:</h4>       
+        <ul id="Electronics"></ul> 
+       
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"
         integrity="sha512-uMtXmF28A2Ab/JJO2t/vYhlaa/3ahUOgj1Zf27M5rOo8/+fcTUVH0/E0ll68njmjrLqOBjXM3V9NiPFL5ywWPQ=="
@@ -40,7 +47,7 @@
         const myform = document.getElementById('seller-form');
         const sellingprice = document.getElementById('sellingprice');
         const productname = document.getElementById('product');
-        const category = document.querySelector('.form-select')
+        const category = document.querySelector('.form-select');
  
         myform.addEventListener('submit', addProduct);
 
@@ -56,9 +63,9 @@
                     category: category.value
                 }
                 try {
-                    const post = await axios.post('https://crudcrud.com/api/a3fa8d5b49924369ab38384f601fb9ae/products', productDetails)
-                    console.log(post.data)
-                    ShowProductonScreen(post.data)
+                    const response = await axios.post('https://crudcrud.com/api/8c2c3de12e06479d8108a2f0e7e8adba/products', productDetails)
+                    console.log(response.data);
+                    ShowProductonScreen(response.data);
                     sellingprice.value = '';
                     productname.value = '';
                     category.value = '';
@@ -73,9 +80,9 @@
 
         window.addEventListener("DOMContentLoaded", async () => {
             try {
-                const response = await axios.get('https://crudcrud.com/api/a3fa8d5b49924369ab38384f601fb9ae/products')
+                const response = await axios.get('https://crudcrud.com/api/8c2c3de12e06479d8108a2f0e7e8adba/products')
                 console.log(response);
-                for (var i = 0; i < response.data.length; i++) {
+                for (var i = 0; i < response.data.length; i++){
                     ShowProductonScreen(response.data[i]);
                 }
             }
@@ -85,39 +92,74 @@
         })
 
         function ShowProductonScreen(product) {
-                const parentNode = document.getElementById('products');
+
+                if(product.category=='Electronics'){
+                const parentNode = document.getElementById('Electronics');
                 const childHTML = `<li id=${product._id}>  ${product.sellingprice} - ${product.productname} - ${product.category}
-                    <button  class="btn btn-danger btn-sm" onClick=deleteProduct("${product._id}")>Delete Product</button>
-                    </li>`
+                <button class="btn btn-danger btn-sm" onClick=deleteProduct("${product._id}","${product.category}")>Delete Product</button>
+                </li>`
                 parentNode.innerHTML = parentNode.innerHTML + childHTML;
-                
+                }
+
+                else if(product.category=='Food'){
+                const parentNode = document.getElementById('Food');
+                const childHTML = `<li id=${product._id}>  ${product.sellingprice} - ${product.productname} - ${product.category}
+                <button class="btn btn-danger btn-sm" onClick=deleteProduct("${product._id}","${product.category}")>Delete Product</button>
+                </li>`
+                parentNode.innerHTML = parentNode.innerHTML + childHTML;
+                }
+
+                else if(product.category=='Skincare'){
+                const parentNode = document.getElementById('Skincare');
+                const childHTML = `<li id=${product._id}>  ${product.sellingprice} - ${product.productname} - ${product.category}
+                <button class="btn btn-danger btn-sm" onClick=deleteProduct("${product._id}","${product.category}")>Delete Product</button>
+                </li>`
+                parentNode.innerHTML = parentNode.innerHTML + childHTML;
+                }
             }
         
 
 
-        async function deleteProduct(productId) {
+        async function deleteProduct(productId, category) {
             try {
-                const res = await axios.delete(`https://crudcrud.com/api/a3fa8d5b49924369ab38384f601fb9ae/products/${productId}`)
-                removeProductfromScreen(productId)
+                const res = await axios.delete(`https://crudcrud.com/api/8c2c3de12e06479d8108a2f0e7e8adba/products/${productId}`)
+                removeProductfromScreen(productId, category)
             }
-
             catch (err) {
                 console.log(err)
             }
 
         }
-        async function removeProductfromScreen(productId) {
-            try {
-                const parentNode = document.getElementById('products');
+        function removeProductfromScreen(productId, category) {
+
+        
+            if(category=='Electronics'){
+                const parentNode = document.getElementById('Electronics')                
+                const deleteChild = document.getElementById(productId);
+                if (deleteChild){
+                   parentNode.removeChild(deleteChild);
+                }
+                
+            }
+            
+            else if(category=='Food'){
+                const parentNode = document.getElementById('Food')
                 const deleteChild = document.getElementById(productId);
                 if (deleteChild) {
-                    parentNode.removeChild(deleteChild);
+                  parentNode.removeChild(deleteChild);
                 }
             }
-            catch (err) {
-                console.log(err)
+
+            
+            else if(category=='Skincare'){
+                const parentNode = document.getElementById('Skincare')
+                const deleteChild = document.getElementById(productId);
+                if (deleteChild) {
+                parentNode.removeChild(deleteChild);
+                }
             }
         }
+        
 
 
 
